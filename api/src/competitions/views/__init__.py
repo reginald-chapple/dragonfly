@@ -1,0 +1,1 @@
+from .competition_outcomes import competition_outcome_collection, competition_outcome_detail
