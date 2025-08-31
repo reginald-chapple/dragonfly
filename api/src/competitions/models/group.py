@@ -15,8 +15,8 @@ class Group(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(_("name"), max_length=255, unique=True, null=False, blank=False)
     description = models.TextField(_("description"), null=True, blank=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("creator"), on_delete=models.CASCADE, related_name="created_groups", null=False, blank=False)
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name=_("members"), related_name="groups", through='GroupMember')
+    creator = models.OneToOneField(settings.AUTH_USER_MODEL, verbose_name=_("creator"), on_delete=models.CASCADE, related_name="group", null=False, blank=False)
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name=_("members"), related_name="memberships", through='GroupMember')
     competitions = models.ManyToManyField(Competition, verbose_name=_("competitions"), related_name="groups", through='GroupCompetition')
 
     class Meta:
@@ -33,7 +33,6 @@ class GroupMember(BaseModel):
     """
     Through model for the Group's many-to-many relationship with users.
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
